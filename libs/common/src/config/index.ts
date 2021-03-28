@@ -13,7 +13,7 @@ const config = {
   DATABASE: {
     database: 'test',
     user: 'root',
-    password: '123456',
+    password: '',
   },
 };
 

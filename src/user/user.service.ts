@@ -2,18 +2,21 @@
 import { UserInterface } from './interface/user.interface';
 import { UserBaseDto, UserUpdateDto } from './dto/user.dto';
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository } from '@nestjs/typeorm'
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm' ;;
 import { Repository } from 'typeorm';
 import { User } from 'libs/db/entity/user.entity';
 import { CustomException } from 'libs/common/common/http.decoration';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const md5 = require('md5');
 @Injectable()
-export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
-  ) { }
+export class UserService extends TypeOrmCrudService<User>{
+  userRepository: Repository<User>;
+  constructor ( @InjectRepository (User) userRepository: Repository<User> ){
+    super (userRepository);
+    this.userRepository = userRepository;
+  }
+
 
   /*
    *@Description: 用户注册

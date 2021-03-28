@@ -20,12 +20,25 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { Crud, CrudController } from '@nestjsx/crud';
+import { User } from 'libs/db/entity/user.entity';
+
+@Crud({
+  model: {
+    type: UserBaseDto,
+  },
+  dto: {
+    create: UserBaseDto,
+    update: UserUpdateDto,
+    replace: UserUpdateDto,
+  }
+})
 @ApiTags('用户')
 @Controller('user')
-export class UserController {
+export class UserController implements CrudController<User> {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userService: UserService,
+    public readonly service: UserService,
   ) {}
   @Post('register')
   @ApiOperation({
@@ -33,7 +46,7 @@ export class UserController {
   })
   @HttpCode(200)
   async register(@Body() params: UserBaseDto): Promise<UserInterface> {
-    const resData = await this.userService.userRegister(params);
+    const resData = await this.service.userRegister(params);
     return resData;
   }
   @Post('updateUserInfo')
@@ -45,7 +58,7 @@ export class UserController {
   //   @UseGuards(AuthGuard('local'))
   //   @ApiBearerAuth()
   async updateUserInfo(@Body() params: UserUpdateDto): Promise<UserInterface> {
-    const resData = await this.userService.userInfoUpdate(params);
+    const resData = await this.service.userInfoUpdate(params);
     return resData;
   }
   @Post('login')
@@ -70,7 +83,7 @@ export class UserController {
   // @UseGuards(AuthGuard('jwt'))
   @ApiBearerAuth()
   async getUserInfo(@Query('id') id: number): Promise<any> {
-    const data =  await this.userService.getUserInfo({ id });
+    const data = await this.service.getUserInfo({ id });
     const payload = { username: data.username, id: data.id };
     const token = this.jwtService.sign(payload);
     data.token = token;
@@ -96,8 +109,8 @@ export class UserController {
     summary: '删除用户',
   })
   @HttpCode(200)
-  async delUser(@Query('id') id :number): Promise<any> {
-    const resData = await this.userService.delUser(id);
+  async delUser(@Query('id') id: number): Promise<any> {
+    const resData = await this.service.delUser(id);
     return resData;
   }
   @Get('getUserList')
@@ -105,7 +118,7 @@ export class UserController {
     summary: '查询用户列表',
   })
   async getUserList(): Promise<UserInterface[]> {
-    const resData = await this.userService.getUserList();
+    const resData = await this.service.getUserList();
     return resData;
   }
 }

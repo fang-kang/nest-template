@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { NestFactory } from '@nestjs/core';
-import * as rateLimit from 'express-rate-limit';
+// import * as rateLimit from 'express-rate-limit';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -10,11 +10,23 @@ import { ValidationPipe } from 'libs/common/pipes/validation.pipe';
 import { TransformInterceptor } from 'libs/common/interface/transform.interceptor';
 import { HttpExceptionFilter } from 'libs/common/filters/http-exception.filter';
 import config from 'libs/common/config';
+import { AllExceptionsFilter } from 'libs/common/filters/any-exception.filter';
+import { LoggerMiddleware } from 'libs/common/middleware/logger.middleware';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.useGlobalPipes(new ValidationPipe()); //开启一个全局验证管道
+  app.use(new LoggerMiddleware().use);
+
+  // 全局验证管道
+  app.useGlobalPipes(new ValidationPipe());
+
+  // 全局成功拦截器
   app.useGlobalInterceptors(new TransformInterceptor());
+
+  // 全局错误处理器
   app.useGlobalFilters(new HttpExceptionFilter());
+  // 全局异常
+  // app.useGlobalFilters(new AllExceptionsFilter());
+
   const devMode = process.env.NODE_ENV === 'development';
   let rootDir: string
   if (devMode) {
@@ -34,12 +46,12 @@ async function bootstrap() {
   SwaggerModule.setup('/doc', app, document);
   //跨域
   app.enableCors();
-  app.use(
-    rateLimit({
-      windowMs: 10 * 60 * 1000, // 10 minutes
-      max: 100, // limit each IP to 100 requests per windowMs
-    }),
-  );
+  // app.use(
+  //   rateLimit({
+  //     windowMs: 10 * 60 * 1000, // 10 minutes
+  //     max: 100, // limit each IP to 100 requests per windowMs
+  //   }),
+  // );
   await app.listen(config.PORT);
 }
 bootstrap();
