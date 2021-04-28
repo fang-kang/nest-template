@@ -10,7 +10,7 @@ import { ValidationPipe } from 'libs/common/pipes/validation.pipe';
 import { TransformInterceptor } from 'libs/common/interface/transform.interceptor';
 import { HttpExceptionFilter } from 'libs/common/filters/http-exception.filter';
 import config from 'libs/common/config';
-import { AllExceptionsFilter } from 'libs/common/filters/any-exception.filter';
+// import { AllExceptionsFilter } from 'libs/common/filters/any-exception.filter';
 import { LoggerMiddleware } from 'libs/common/middleware/logger.middleware';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

@@ -1,8 +1,9 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { FileController } from './file.controller';
 import { FileService } from './file.service';
 import { MulterModule } from '@nestjs/platform-express';
-import dayjs = require('dayjs');
+import dayjs from 'dayjs';
 import { diskStorage } from 'multer';
 // import * as nuid from 'nuid;
 // import { join } from 'path';

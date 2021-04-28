@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   Controller,
@@ -9,7 +10,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
 import { FileUploadDto } from './dto/file.dto';
-import { join } from 'path';
+// import { join } from 'path';
 import config from 'libs/common/config';
 @ApiTags('文件上传')
 @Controller('file')
